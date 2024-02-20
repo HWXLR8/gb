@@ -1,4 +1,15 @@
+EMU = ../visualboyadvance-m/build/visualboyadvance-m
+BIN = test.gb
+
 all:
 	rgbasm -L -o hello-world.o hello-world.asm
-	rgblink -o hello-world.gb hello-world.o
-	rgbfix -v -p 0xFF hello-world.gb
+	rgblink -o $(BIN) hello-world.o
+	rgbfix -v -p 0xFF $(BIN)
+
+.PHONY: clean
+clean:
+	rm *.o *.gb
+
+.PHONY: run
+run: all
+	$(EMU) $(BIN)
