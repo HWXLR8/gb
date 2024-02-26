@@ -4,7 +4,7 @@ SECTION "Header", ROM0[$100]
 
 	jp EntryPoint
 
-	ds $150 - @, 0 ; Make room for the header
+	ds $150 - @, 0 ; Make room for the header (ends at 14F)
 
 EntryPoint:
 	; Shut down audio circuitry
@@ -22,22 +22,22 @@ WaitVBlank:
 	ld [rLCDC], a
 
 	; Copy the tile data
-	ld de, Tiles
-	ld hl, $9000
-	ld bc, TilesEnd - Tiles
+	ld de, Tiles		; source
+	ld hl, $9000		; destination
+	ld bc, TilesEnd - Tiles	; # of bytes to copy
 CopyTiles:
-	ld a, [de]
-	ld [hli], a
-	inc de
-	dec bc
+	ld a, [de]	; load 1 tile into a
+	ld [hli], a	; move the tile into addr hl + 1
+	inc de		; dec source
+	dec bc		; dec # of tiles remaining
 	ld a, b
 	or a, c
-	jp nz, CopyTiles
+	jp nz, CopyTiles	; jump if Z is not set
 
 	; Copy the tilemap
-	ld de, Tilemap
-	ld hl, $9800
-	ld bc, TilemapEnd - Tilemap
+	ld de, Tilemap 		; source
+	ld hl, $9800		; destination
+	ld bc, TilemapEnd - Tilemap ; number of bytes to copy
 CopyTilemap:
 	ld a, [de]
 	ld [hli], a
